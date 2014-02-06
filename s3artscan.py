@@ -16,6 +16,7 @@ accessid=''
 secretkey=''
 startdoi='eLife.00000'
 enddoi=  'eLife.99999'
+maxarts=99999
 
 # using print_function
 def debugmsg(*objs):
@@ -59,6 +60,7 @@ def getoptions():
     parser.add_argument('--bucket', help='the name of the S3 storage bucket', default='elife-articles')
     parser.add_argument('--awssec', help='S3 access secret, or use env-var AWS_SECRET_ACCESS_KEY', default='')
     parser.add_argument('--awskey', help='S3 access key id, or use env-var AWS_ACCESS_KEY_ID', default='')
+    parser.add_argument('--maxarts', help='maximum number of articles to print', type=int)
 
     parser.add_argument('--verbose', '-v', action='count', help='print additional messages to stderr', default=0)
 
@@ -69,12 +71,15 @@ def getoptions():
     global bucketname
     global startdoi
     global enddoi
+    global maxarts
     accessid = args.awskey
     secretkey= args.awssec
     verbose = args.verbose
     bucketname = args.bucket
     startdoi = args.startdoi
     enddoi = args.enddoi
+    maxarts = args.maxarts
+
     if (startdoi != 'eLife.00000') or (enddoi != 'eLife.99999'):
         infomsg( "Limiting articles: ", startdoi, enddoi )
 
@@ -195,6 +200,8 @@ def dobucketlist(keys):
     """
     Read in the files stored in the bucket and process them
     """
+    global maxarts
+ 
     for k in keys:
         #infomsg("Listed: ", k.name)
 
@@ -202,6 +209,10 @@ def dobucketlist(keys):
 	    xmlcontent = fetchxml(k)
 	    if xmlcontent != None and len(xmlcontent) >0:
 		process(xmlcontent)
+
+	    maxarts -= 1
+	    if maxarts <= 0:
+		break
 
 
 def main():

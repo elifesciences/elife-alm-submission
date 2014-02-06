@@ -11,8 +11,10 @@ else
    starg="--startdoi $lastseen"
 fi
 
-bin/python s3artscan.py $starg >$artfile
+maxarg="--maxarts 10"
+
+bin/python s3artscan.py $starg $maxarg >$artfile
 sort <$artfile >$sortedart
 rake db::articles:load <$sortedart
 
-tail -1 $sortedart |cut -f1 >>$lastseen
+tail -1 $sortedart |cut -c9-19 >$lastseen
