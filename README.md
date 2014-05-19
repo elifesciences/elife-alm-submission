@@ -7,7 +7,7 @@ article store and parse them for DOI and title information using the NLM parser,
 printing the result out in a format suitable for the alm server db:article:load
 call. Use --help for info on parameters.
 
-# ALMBackup / ALMRestore
+## ALMBackup / ALMRestore
 
 These shell scripts work as a pair to save and restore the ALM database to a tar
 file stored in an S3 bucket. Along with the SQL and Couch databases, several of
